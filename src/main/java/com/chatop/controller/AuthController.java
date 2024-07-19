@@ -26,14 +26,12 @@ public class AuthController {
         if (loggedInUser == null) {
             return ResponseEntity.status(401).body("Invalid credentials");
         }
-        // Generate JWT token here
         return ResponseEntity.ok("JWT Token");
     }
 
     @GetMapping("/me")
     public ResponseEntity<?> getProfile(@RequestHeader("Authorization") String authHeader) {
-        // Extract and validate JWT token from header
-        Long userId = 1L; // Extracted from JWT token
+        Long userId = 1L;
         User user = userService.getUserById(userId);
         if (user == null) {
             return ResponseEntity.status(401).body("Unauthorized");
