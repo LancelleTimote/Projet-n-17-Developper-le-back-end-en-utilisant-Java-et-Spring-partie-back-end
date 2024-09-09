@@ -2,6 +2,7 @@ package com.chatop.filter;
 
 import com.chatop.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,6 +21,7 @@ import java.io.IOException;
 public class JwtRequestFilter extends OncePerRequestFilter {
 
     @Autowired
+    @Qualifier("customUserDetailsService")
     private UserDetailsService userDetailsService;
 
     @Autowired
@@ -31,23 +33,41 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
         final String authorizationHeader = request.getHeader("Authorization");
 
+        System.out.println("Authorization header: " + authorizationHeader);
+
         String username = null;
         String jwt = null;
 
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             jwt = authorizationHeader.substring(7);
             username = jwtUtil.extractUsername(jwt);
+
+            System.out.println("Extracted JWT: " + jwt);
+            System.out.println("Extracted Username: " + username);
+
+            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+
+                System.out.println("Loaded UserDetails for username: " + username);
+                System.out.println("Validating JWT...");
+
+                if (jwtUtil.validateToken(jwt, userDetails)) {
+                    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                            userDetails, null, userDetails.getAuthorities());
+                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+
+                    System.out.println("Authentication set in SecurityContext for user: " + username);
+                } else {
+                    System.out.println("Invalid JWT Token for user: " + username);
+                }
+            } else {
+                System.out.println("No JWT token found or username is null or authentication already set");
+            }
+        } else {
+            System.out.println("Authorization header is missing or does not start with Bearer");
         }
 
-        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-            if (jwtUtil.validateToken(jwt, userDetails)) {
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                        userDetails, null, userDetails.getAuthorities());
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-            }
-        }
         chain.doFilter(request, response);
     }
 }

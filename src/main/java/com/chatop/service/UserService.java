@@ -9,6 +9,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class UserService implements UserDetailsService {
 
@@ -24,9 +26,9 @@ public class UserService implements UserDetailsService {
     }
 
     public User login(String email, String password) {
-        User user = userRepository.findByEmail(email);
-        if (user != null && passwordEncoder.matches(password, user.getPassword())) {
-            return user;
+        Optional<User> optionalUser = userRepository.findByEmail(email);
+        if (optionalUser.isPresent() && passwordEncoder.matches(password, optionalUser.get().getPassword())) {
+            return optionalUser.get();
         }
         return null;
     }
@@ -36,15 +38,13 @@ public class UserService implements UserDetailsService {
     }
 
     public User getUserByEmail(String email) {
-        return userRepository.findByEmail(email);
+        return userRepository.findByEmail(email).orElse(null);
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByEmail(username);
-        if (user == null) {
-            throw new UsernameNotFoundException("User not found with email: " + username);
-        }
+        User user = userRepository.findByEmail(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + username));
         return org.springframework.security.core.userdetails.User
                 .withUsername(user.getEmail())
                 .password(user.getPassword())

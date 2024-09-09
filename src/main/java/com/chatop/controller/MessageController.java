@@ -11,6 +11,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/messages")
 public class MessageController {
+
     @Autowired
     private MessageService messageService;
 
@@ -20,7 +21,8 @@ public class MessageController {
     }
 
     @PostMapping
-    public ResponseEntity<Message> createMessage(@RequestBody Message message) {
+    public ResponseEntity<Message> createMessage(
+            @RequestBody Message message) {
         return ResponseEntity.ok(messageService.createMessage(message));
     }
 }

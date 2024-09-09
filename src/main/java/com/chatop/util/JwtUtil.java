@@ -20,7 +20,7 @@ public class JwtUtil {
     private final Key SECRET_KEY;
 
     public JwtUtil() {
-        String base64Key = "/am0n2345Dv4ey+vCYsgm3PPAvMmeZ87FRWDww4CC1I=";
+        String base64Key = "aQrOP1chtinEQMdYxGH7XSw0DAtUOe3fXHouyY9IGS4=";
         byte[] decodedKey = Base64.getDecoder().decode(base64Key);
         this.SECRET_KEY = Keys.hmacShaKeyFor(decodedKey);
     }
