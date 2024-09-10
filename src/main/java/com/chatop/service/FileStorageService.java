@@ -39,10 +39,17 @@ public class FileStorageService {
         }
 
         Path targetLocation = this.fileStorageLocation.resolve(fileName);
-        Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
+
+        try {
+            Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            System.err.println("Failed to store file " + fileName + ": " + e.getMessage());
+            throw e;
+        }
 
         System.out.println("File stored at: " + targetLocation.toString());
 
         return fileName;
     }
+
 }
