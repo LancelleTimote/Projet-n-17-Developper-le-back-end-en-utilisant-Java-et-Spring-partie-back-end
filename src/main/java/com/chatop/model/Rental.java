@@ -23,6 +23,7 @@ public class Rental {
 
     private String picture;
 
+    @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
     @ManyToOne
