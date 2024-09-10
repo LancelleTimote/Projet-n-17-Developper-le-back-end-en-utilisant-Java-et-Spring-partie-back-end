@@ -2,6 +2,7 @@ package com.chatop.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.util.Date;
 
@@ -23,5 +24,8 @@ public class Message {
     @JoinColumn(name = "rental_id")
     private Rental rental;
 
+    @CreationTimestamp
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "created_at", updatable = false)
     private Date createdAt;
 }
