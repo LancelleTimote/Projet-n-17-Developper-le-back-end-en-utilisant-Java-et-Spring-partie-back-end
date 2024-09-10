@@ -15,9 +15,9 @@ public class SwaggerConfig {
     @Bean
     public OpenAPI openAPI() {
         return new OpenAPI()
-                .info(new Info().title("Orion MDD API")
+                .info(new Info().title("ChâTop API")
                         .description(
-                                "The API of the Orion MDD Web App. Provide access and operations on the Orion MDD application database.")
+                                "The API of ChâTop Web App. Provide access and operations on the ChâTop application database.")
                         .version("1.0")
                 );
     }
