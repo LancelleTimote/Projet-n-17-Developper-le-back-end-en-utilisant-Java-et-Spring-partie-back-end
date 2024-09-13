@@ -60,6 +60,7 @@ ChâTop veut développer un portail en ligne pour permettre aux locataires poten
 
 - Cloner ce repository.
 - Pour installer les différents packages, dans le terminal à partir du dossier back-end, exécuter mvn install, ou dans intelliJ faites un build project.
+- Attention pour des soucis de confidentialité il n'y a pas de fichier application.properties, vous en aurez besoin pour démarrer le back-end, je vous met un exemple de application.properties dans le repo avec un keygenerator pour la clé JWT
 
 ## :question: 7. Utilisation du site web <a name = "utilisation_siteweb"></a>
 

@@ -4,6 +4,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -19,9 +20,8 @@ public class JwtUtil {
 
     private final Key SECRET_KEY;
 
-    public JwtUtil() {
-        String base64Key = "aQrOP1chtinEQMdYxGH7XSw0DAtUOe3fXHouyY9IGS4=";
-        byte[] decodedKey = Base64.getDecoder().decode(base64Key);
+    public JwtUtil(@Value("${jwt.secret}") String secretKey) {
+        byte[] decodedKey = Base64.getDecoder().decode(secretKey);
         this.SECRET_KEY = Keys.hmacShaKeyFor(decodedKey);
     }
 
